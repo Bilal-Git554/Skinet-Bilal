@@ -1,5 +1,6 @@
 using System;
 using CORE.Entities;
+using CORE.Interface;
 using INFRASTRUCTURE.Datas;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,26 +11,26 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-  private readonly StoreContext _context;
-  public ProductsController(StoreContext context)
+  private readonly IProductRepository _repo;
+  public ProductsController(IProductRepository repo)
   {
-    _context = context;
+    _repo = repo;
   }
   //Dependency Injection
 
 
   [HttpGet]
-    public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
+    public async Task<ActionResult<IReadOnlyList<Products>>> GetProducts()
     {
-        return await _context.Product.ToListAsync();
+        return Ok(await _repo.GetProductsAsync());
     }
     //Getting The Rows From The Database
 
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Products>> GetProducts(int id)
+    public async Task<ActionResult<Products>> GetProduct(int id)
     {
-        var get_items = await _context.Product.FindAsync(id);
+        var get_items = await _repo.GetProductByIdAsync(id);
 
         if(get_items == null)
         {
@@ -44,9 +45,14 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Products>> CreateProducts(Products p)
     {
-        _context.Product.Add(p);
-        await _context.SaveChangesAsync();
-        return p;
+        _repo.AddProduct(p);
+
+        if(await _repo.SaveAllChangesAsync())
+        {
+            return CreatedAtAction("GetProduct", new { id = p.Id }, p);
+        }
+
+        return BadRequest("Failed To Create Product");
     }
     //Data To The DB  From The Client
 
@@ -54,26 +60,40 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Products>> DeleteProducts(int id)
     {
-        var delete_items = await _context.Product.FindAsync(id);
+        var delete_items = await _repo.GetProductByIdAsync(id);
+
         if(delete_items == null)
         {
             return NotFound();
         }
-        _context.Product.Remove(delete_items);
-        await _context.SaveChangesAsync();
-        return NoContent();
+
+        _repo.DeleteProduct(delete_items);
+
+        if(await _repo.SaveAllChangesAsync())
+        {
+            return NoContent();
+        }
+
+        return BadRequest("Failed To Delete Product");
     }//Delete Using Id
 
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult<Products>> UpdateProducts(int id,Products p)
     {
-        if(id != p.Id)
+        if(!_repo.ProductExists(id))
         {
-            return BadRequest();
+            return BadRequest("Product Not Found");
         }
-        _context.Entry(p).State = EntityState.Modified; 
-        await _context.SaveChangesAsync();
-        return Ok(p);
+ 
+         p.Id = id;      
+         _repo.UpdateProduct(p);
+
+         if(await _repo.SaveAllChangesAsync())
+         {
+            return NoContent();
+         }
+
+         return BadRequest("Failed To Update Product");
     }//After Getting The Paticular Data By The Id Then We Update It
 }
