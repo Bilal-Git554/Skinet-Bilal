@@ -24,7 +24,7 @@ public class ProductsController : ControllerBase
     {
         return Ok(await _repo.GetProductsAsync());
     }
-    //Getting The Rows From The Database
+    //Getting The Rows From The ProductRepository And Displaying It To The Client
 
 
     [HttpGet("{id:int}")]
@@ -39,7 +39,7 @@ public class ProductsController : ControllerBase
 
         return get_items;
     }
-    //Getting The Particular Product From The Database By Id
+    //Getting The Particular Product From The ProductRepository Using Id And Displaying It To The Client
 
 
     [HttpPost]
@@ -54,7 +54,8 @@ public class ProductsController : ControllerBase
 
         return BadRequest("Failed To Create Product");
     }
-    //Data To The DB  From The Client
+    //Data To The DB  From The Client Through The ProductRepository And Passing The Created Data And The Id To The 
+    //GetProduct Action To Display The Created Data To The Client
 
 
     [HttpDelete("{id:int}")]
@@ -86,7 +87,8 @@ public class ProductsController : ControllerBase
             return BadRequest("Product Not Found");
         }
  
-         p.Id = id;      
+         p.Id = id;    
+
          _repo.UpdateProduct(p);
 
          if(await _repo.SaveAllChangesAsync())
@@ -95,5 +97,6 @@ public class ProductsController : ControllerBase
          }
 
          return BadRequest("Failed To Update Product");
-    }//After Getting The Paticular Data By The Id Then We Update It
+    }//After Getting The Paticular Data By The Id Then We Update It Through The ProductRepository 
+    // And Display The Updated Data To The Client
 }
