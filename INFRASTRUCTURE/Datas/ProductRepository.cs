@@ -17,7 +17,7 @@ public class ProductRepository : IProductRepository
     {
         _context.Product.Add(p_Add);
     }
-    
+
     public void UpdateProduct(Products p_Update)
     {
       _context.Entry(p_Update).State = EntityState.Modified;
@@ -38,6 +38,15 @@ public class ProductRepository : IProductRepository
         return await _context.Product.ToListAsync();
     }
     
+    public async Task<IReadOnlyList<string>> GetBrandsAsync()
+    {
+        return await _context.Product.Select(p => p.Brand).Distinct().ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<string>> GetTypesAsync()
+    {
+        return await _context.Product.Select(p => p.Type).Distinct().ToListAsync();
+    }
     public async Task<bool> SaveAllChangesAsync()
     {
         return await _context.SaveChangesAsync() > 0;

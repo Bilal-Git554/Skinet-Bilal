@@ -41,6 +41,18 @@ public class ProductsController : ControllerBase
     }
     //Getting The Particular Product From The ProductRepository Using Id And Displaying It To The Client
 
+    [HttpGet("brands")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
+    {
+        return Ok(await _repo.GetBrandsAsync());
+    }//Getting The Brands From The ProductRepository And Displaying It To The Client
+
+
+    [HttpGet("types")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
+    {
+        return Ok(await _repo.GetTypesAsync());
+    }//Getting The Types From The ProductRepository And Displaying It To The Client
 
     [HttpPost]
     public async Task<ActionResult<Products>> CreateProducts(Products p)
@@ -97,6 +109,6 @@ public class ProductsController : ControllerBase
          }
 
          return BadRequest("Failed To Update Product");
-    }//After Getting The Paticular Data By The Id Then We Update It Through The ProductRepository 
+    }//After Checking The Paticular Data By The Id Then We Update It Through The ProductRepository 
     // And Display The Updated Data To The Client
 }
