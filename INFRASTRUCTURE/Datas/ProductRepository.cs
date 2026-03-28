@@ -33,22 +33,31 @@ public class ProductRepository : IProductRepository
         return await _context.Product.FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<Products>> GetProductsAsync(string? brand , string? type)
+    public async Task<IReadOnlyList<Products>> GetProductsAsync(string? brand , string? type, string? sort)
     {
         var query = _context.Product.AsQueryable();
-        
-        if(!string.IsNullOrEmpty(brand))
+
+        if(!string.IsNullOrWhiteSpace(brand))
         {
             query = query.Where(p => p.Brand == brand);
         }
 
-        if(!string.IsNullOrEmpty(type))
+        if(!string.IsNullOrWhiteSpace(type))
         {
             query = query.Where(p => p.Type == type);
         }
-
+        
+        if(!string.IsNullOrWhiteSpace(sort))
+        {
+            query = sort switch
+            {
+                "priceAsc" => query.OrderBy(p => p.Price),
+                "priceDesc" => query.OrderByDescending(p => p.Price),
+                _ => query.OrderBy(x => x.Name)
+            };
+        }
         return await query.ToListAsync();
-    }
+    }//Getting The Filtered Rows From The ProductRepository And Displaying It To The CLient 
     
     public async Task<IReadOnlyList<string>> GetBrandsAsync()
     {

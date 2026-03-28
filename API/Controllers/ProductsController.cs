@@ -20,9 +20,10 @@ public class ProductsController : ControllerBase
 
 
   [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Products>>> GetProducts(string? brand , string? type)
+    public async Task<ActionResult<IReadOnlyList<Products>>> GetProducts(string? brand , string? type,
+     string? sort)
     {
-        return Ok(await _repo.GetProductsAsync(brand, type));
+        return Ok(await _repo.GetProductsAsync(brand, type, sort));
     }
     //Getting The Rows From The ProductRepository And Displaying It To The Client
 
