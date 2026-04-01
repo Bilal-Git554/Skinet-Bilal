@@ -11,8 +11,8 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-  private readonly IProductRepository _repo;
-  public ProductsController(IProductRepository repo)
+  private readonly IGenericRepository<Products> _repo;
+  public ProductsController(IGenericRepository<Products> repo)
   {
     _repo = repo;
   }
@@ -23,7 +23,7 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<Products>>> GetProducts(string? brand , string? type,
      string? sort)
     {
-        return Ok(await _repo.GetProductsAsync(brand, type, sort));
+        return Ok(await _repo.ListAllAsync());
     }
     //Getting The Rows From The ProductRepository And Displaying It To The Client
 
@@ -31,7 +31,7 @@ public class ProductsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Products>> GetProduct(int id)
     {
-        var get_items = await _repo.GetProductByIdAsync(id);
+        var get_items = await _repo.GetByIdAsync(id);
 
         if(get_items == null)
         {
@@ -45,22 +45,22 @@ public class ProductsController : ControllerBase
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
     {
-        return Ok(await _repo.GetBrandsAsync());
+        return Ok();
     }//Getting The Brands From The ProductRepository And Displaying It To The Client
 
 
     [HttpGet("types")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
     {
-        return Ok(await _repo.GetTypesAsync());
+        return Ok();
     }//Getting The Types From The ProductRepository And Displaying It To The Client
 
     [HttpPost]
     public async Task<ActionResult<Products>> CreateProducts(Products p)
     {
-        _repo.AddProduct(p);
+        _repo.Add(p);
 
-        if(await _repo.SaveAllChangesAsync())
+        if(await _repo.SaveAllAsync())
         {
             return CreatedAtAction("GetProduct", new { id = p.Id }, p);
         }
@@ -74,16 +74,16 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Products>> DeleteProducts(int id)
     {
-        var delete_items = await _repo.GetProductByIdAsync(id);
+        var delete_items = await _repo.GetByIdAsync(id);
 
         if(delete_items == null)
         {
             return NotFound();
         }
 
-        _repo.DeleteProduct(delete_items);
+        _repo.Remove(delete_items);
 
-        if(await _repo.SaveAllChangesAsync())
+        if(await _repo.SaveAllAsync())
         {
             return NoContent();
         }
@@ -95,16 +95,16 @@ public class ProductsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult<Products>> UpdateProducts(int id,Products p)
     {
-        if(!_repo.ProductExists(id))
+        if(!_repo.Exists(id))
         {
             return BadRequest("Product Not Found");
         }
  
          p.Id = id;    
 
-         _repo.UpdateProduct(p);
+         _repo.Update(p);
 
-         if(await _repo.SaveAllChangesAsync())
+         if(await _repo.SaveAllAsync())
          {
             return NoContent();
          }
