@@ -45,14 +45,14 @@ public class ProductsController : ControllerBase
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
     {
-        return Ok();
+        return Ok("Brand Controller Is Working");
     }//Getting The Brands From The ProductRepository And Displaying It To The Client
 
 
     [HttpGet("types")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
     {
-        return Ok();
+        return Ok("Types Controller Is Working");
     }//Getting The Types From The ProductRepository And Displaying It To The Client
 
     [HttpPost]
