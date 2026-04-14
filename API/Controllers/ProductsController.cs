@@ -1,6 +1,7 @@
 using System;
 using CORE.Entities;
 using CORE.Interface;
+using CORE.Specifications;
 using INFRASTRUCTURE.Datas;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +20,17 @@ public class ProductsController : ControllerBase
   //Dependency Injection
 
 
-  [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Products>>> GetProducts(string? brand , string? type,
+     [HttpGet]
+     public async Task<ActionResult<IReadOnlyList<Products>>> GetProducts(string? brand , string? type,
      string? sort)
     {
-        return Ok(await _repo.ListAllAsync());
+        var spec = new ProductSpecification(brand,type);
+
+        var products = await _repo.ListAsync(spec);
+
+        return Ok(products);
     }
-    //Getting The Rows From The ProductRepository And Displaying It To The Client
+    //Getting The Rows From The GenericRepository And Displaying It To The Client
 
 
     [HttpGet("{id:int}")]
@@ -40,20 +45,20 @@ public class ProductsController : ControllerBase
 
         return get_items;
     }
-    //Getting The Particular Product From The ProductRepository Using Id And Displaying It To The Client
+    //Getting The Particular Product From The GenericRepository Using Id And Displaying It To The Client
 
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
     {
         return Ok("Brand Controller Is Working");
-    }//Getting The Brands From The ProductRepository And Displaying It To The Client
+    }//Getting The Brands From The GenericRepository And Displaying It To The Client
 
 
     [HttpGet("types")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
     {
         return Ok("Types Controller Is Working");
-    }//Getting The Types From The ProductRepository And Displaying It To The Client
+    }//Getting The Types From The GenericRepository And Displaying It To The Client
 
     [HttpPost]
     public async Task<ActionResult<Products>> CreateProducts(Products p)
@@ -67,7 +72,7 @@ public class ProductsController : ControllerBase
 
         return BadRequest("Failed To Create Product");
     }
-    //Data To The DB  From The Client Through The ProductRepository And Passing The Created Data And The Id To The 
+    //Data To The DB  From The Client Through The GenericRepository And Passing The Created Data And The Id To The 
     //GetProduct Action To Display The Created Data To The Client
 
 
@@ -110,6 +115,6 @@ public class ProductsController : ControllerBase
          }
 
          return BadRequest("Failed To Update Product");
-    }//After Checking The Paticular Data By The Id Then We Update It Through The ProductRepository 
+    }//After Checking The Paticular Data By The Id Then We Update It Through The GenericRepository 
     // And Display The Updated Data To The Client
 }
