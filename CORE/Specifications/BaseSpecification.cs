@@ -18,6 +18,16 @@ public class BaseSpecification<T> : ISpecification<T>
     {
         get{return criteria;}
     }
-    //Set The Return Value To The Criteria Property
+  //Set The Return Value To The Criteria Property
+    public Expression<Func<T, object>>? OrderBy{get; private set;}
+    protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
+    {
+        OrderBy = orderByExpression;
+    }
+    public Expression<Func<T, object>>? OrderByDescending{get; private set;}
+    protected void AddOrderByDescending(Expression<Func<T, object>> orderByDescExpression)
+    {
+        OrderByDescending = orderByDescExpression;
+    }
 }
 

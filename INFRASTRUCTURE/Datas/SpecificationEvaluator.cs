@@ -12,6 +12,20 @@ public class SpecificationEvaluator<T> where T : BaseEntity
         {
             query = query.Where(spec.Criteria);
         }
+        //Where Query For Filteration
+
+        if (spec.OrderBy != null)
+        {
+            query = query.OrderBy(spec.OrderBy);
+        }
+        //OrderBy Query For Sorting In Ascending Order
+
+        if (spec.OrderByDescending != null)
+        {
+            query = query.OrderByDescending(spec.OrderByDescending);
+        }
+        //OrderByDescending Query For Sorting In Descending Order
+
         return query;
     }
 }
