@@ -6,9 +6,18 @@ namespace CORE.Interface;
 public interface ISpecification<T>
 {
  Expression<Func<T, bool>>? Criteria { get; }
- //Proeprty Name Is Criteria and its type is Expression<Func<T, bool>>
+ //Property Name Is Criteria And Its Type Is Expression<Func<T, bool>>
  Expression<Func<T, object>>? OrderBy { get; }
-//Proeprty Name Is OrderBy and its type is Expression<Func<T, object>>
+ //Property Name Is OrderBy And Its Type Is Expression<Func<T, object>>
  Expression<Func<T, object>>? OrderByDescending { get; }
- //Proeprty Name Is OrderByDescending and its type is Expression<Func<T, object>>
+ //Property Name Is OrderByDescending And Its Type Is Expression<Func<T, object>>
+ bool IsDistinct { get; }
+ //Property Name Is IsDistinct And Its Type Is bool
 }
+//For Filtering And Sorting 
+
+public interface ISpecification<T, TResult> : ISpecification<T>
+{
+    Expression<Func<T, TResult>>? Select {get;}
+}
+//For Projection(DTO)

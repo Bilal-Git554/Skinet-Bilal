@@ -17,9 +17,11 @@ public ProductSpecification(string? brand , string? type , string? sort) : base(
             case "priceAsc":
                 AddOrderBy(p => p.Price);
                 break;
+
             case "priceDesc":
                 AddOrderByDescending(p => p.Price);
                 break;
+                
             default:
                 AddOrderBy(p => p.Name);
                 break;

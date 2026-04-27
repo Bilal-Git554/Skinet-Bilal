@@ -47,6 +47,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _context.Set<T>().Attach(entity);
         _context.Entry(entity).State=EntityState.Modified;
     }
+    //Basic CRUD Operations
 
     public async Task<T?> GetEntityWithSpec(ISpecification<T> spec)
     {
@@ -62,5 +63,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
     }
+    //For Specification Pattern
 
+    public async Task<TResult?> GetEntityWithSpec<TResult>(ISpecification<T, TResult> spec)
+    {
+        return await ApplySpecification(spec).FirstOrDefaultAsync();
+    }
+
+    public async Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec)
+    {
+        return await ApplySpecification(spec).ToListAsync();
+    }
+
+    private IQueryable<TResult> ApplySpecification<TResult>(ISpecification<T, TResult> spec)
+    {
+        return SpecificationEvaluator<T>.GetQuery<T , TResult>(_context.Set<T>().AsQueryable(), spec);
+    }
+    //For Projection(DTO)
 }

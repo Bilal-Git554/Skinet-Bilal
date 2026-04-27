@@ -50,14 +50,18 @@ public class ProductsController : ControllerBase
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
     {
-        return Ok("Brand Controller Is Working");
+        var spec = new BrandListSpecification();
+
+        return Ok(await _repo.ListAsync(spec));
     }//Getting The Brands From The GenericRepository And Displaying It To The Client
 
 
     [HttpGet("types")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
     {
-        return Ok("Types Controller Is Working");
+        var spec = new TypeListSpecification();
+        
+        return Ok(await _repo.ListAsync(spec));
     }//Getting The Types From The GenericRepository And Displaying It To The Client
 
     [HttpPost]
