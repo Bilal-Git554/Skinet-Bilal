@@ -77,7 +77,7 @@ public class ProductsController : ControllerBase
         return BadRequest("Failed To Create Product");
     }
     //Data To The DB  From The Client Through The GenericRepository And Passing The Created Data And The Id To The 
-    //GetProduct Action To Display The Created Data To The Client
+    //GetProduct Action To Display The Created Data To The Clients
 
 
     [HttpDelete("{id:int}")]
