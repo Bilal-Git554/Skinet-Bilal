@@ -53,7 +53,7 @@ public class ProductsController : ControllerBase
         var spec = new BrandListSpecification();
 
         return Ok(await _repo.ListAsync(spec));
-    }//Getting The Brands From The GenericRepository And Displaying It To The Client
+    }//Getting The Brands Column From The GenericRepository And Displaying It To The Client
 
 
     [HttpGet("types")]
@@ -62,7 +62,7 @@ public class ProductsController : ControllerBase
         var spec = new TypeListSpecification();
         
         return Ok(await _repo.ListAsync(spec));
-    }//Getting The Types From The GenericRepository And Displaying It To The Client
+    }//Getting The Types Column From The GenericRepository And Displaying It To The Client
 
     [HttpPost]
     public async Task<ActionResult<Products>> CreateProducts(Products p)
