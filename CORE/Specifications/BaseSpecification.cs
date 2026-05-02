@@ -39,11 +39,11 @@ public class BaseSpecification<T> : ISpecification<T>
     {
         IsDistinct = true;
     }
+    //Act Like On Off Switch For Distinct Query
 }
 
 public class BaseSpecification<T, TResult> : BaseSpecification<T>, ISpecification<T, TResult>
 {
-
     protected BaseSpecification() : base(){}
     protected BaseSpecification(Expression<Func<T, bool>>? criteria) : base(criteria){}
 
